@@ -1,3 +1,3 @@
 module.exports = {
-    origin: "http://localhost:8080"
+  origin: 'http://localhost:8080',
 };
