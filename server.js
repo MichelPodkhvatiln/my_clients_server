@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const corsConfig = require('./config/cors.config');
+const ConnectToMongoDB = require('./db/db');
+
+ConnectToMongoDB();
 
 const app = express();
 
