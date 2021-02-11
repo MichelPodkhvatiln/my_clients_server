@@ -70,7 +70,7 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  User.findOne({
+  UserModel.findOne({
     username: req.body.username,
   })
     .populate('roles', '-__v')
@@ -102,12 +102,19 @@ exports.signin = (req, res) => {
         expiresIn: 86400, // 24 hours
       });
 
-      res.status(200).send({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        roles: user.role.name,
-        accessToken: token,
+      RoleModel.findById({ _id: user.role }, (err, role) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+
+        res.status(200).send({
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          role: role.name,
+          accessToken: token,
+        });
       });
     });
 };
