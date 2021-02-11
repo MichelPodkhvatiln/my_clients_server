@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   console.log(req.body);
-  res.json({ message: 'User was registered successfully!' });
+  res.json({ message: 'test POST' });
 });
 
 const PORT = process.env.PORT || 3000;

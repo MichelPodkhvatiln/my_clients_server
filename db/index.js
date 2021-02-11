@@ -6,7 +6,7 @@ const UserModel = require('../models/UserModel');
 const RoleModel = require('../models/RoleModel');
 
 const db = {
-  roles: ['user', 'master', 'admin', 'superAdmin'],
+  roles: ['admin', 'master', 'user'],
   mongoose,
   user: UserModel,
   role: RoleModel,

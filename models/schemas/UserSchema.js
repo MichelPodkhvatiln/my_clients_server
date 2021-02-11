@@ -12,13 +12,15 @@ const UserSchema = new Schema({
     required: true,
     unique: 1,
   },
+  password: {
+    type: String,
+    required: true,
+  },
   profile: ProfileSchema,
-  roles: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'role',
-    },
-  ],
+  role: {
+    type: Schema.Types.ObjectId,
+    ref: 'role',
+  },
 });
 
 module.exports = UserSchema;
