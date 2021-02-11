@@ -21,6 +21,9 @@ app.post('/', (req, res) => {
   res.json({ message: 'test POST' });
 });
 
+require('./routes/auth.routes')(app);
+require('./routes/user.routes')(app);
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {

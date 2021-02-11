@@ -72,9 +72,9 @@ const ConnectToMongoDB = async () => {
     const dbPath = process.env.MONGODB_URL;
     const mongooseConnectOptions = {
       useNewUrlParser: true,
+      useFindAndModify: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: true,
     };
 
     await mongoose.connect(dbPath, mongooseConnectOptions);

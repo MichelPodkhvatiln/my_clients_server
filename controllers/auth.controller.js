@@ -4,12 +4,12 @@ const config = require('../config/auth.config.js');
 const db = require('../db');
 
 const UserModel = db.user;
-const RoleModel = db.roles;
+const RoleModel = db.role;
 
 exports.signup = (req, res) => {
-  if (req.body.roles.includes('superAdmin')) {
+  if (req.body.role === 'admin') {
     res
-      .status(500)
+      .status(403)
       .send({ message: 'You cannot create a user with such a role' });
     return;
   }
@@ -26,18 +26,18 @@ exports.signup = (req, res) => {
       return;
     }
 
-    if (req.body.roles) {
-      RoleModel.find(
+    if (req.body.role) {
+      RoleModel.findOne(
         {
-          name: { $in: req.body.roles },
+          name: req.body.role,
         },
-        (err, roles) => {
+        (err, role) => {
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
 
-          user.roles = roles.map((role) => role._id);
+          user.role = role._id;
           user.save((err) => {
             if (err) {
               res.status(500).send({ message: err });
@@ -55,7 +55,7 @@ exports.signup = (req, res) => {
           return;
         }
 
-        user.roles = [role._id];
+        user.role = role._id;
         user.save((err) => {
           if (err) {
             res.status(500).send({ message: err });
@@ -67,4 +67,47 @@ exports.signup = (req, res) => {
       });
     }
   });
+};
+
+exports.signin = (req, res) => {
+  User.findOne({
+    username: req.body.username,
+  })
+    .populate('roles', '-__v')
+    .exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (!user) {
+        res.status(404).send({ message: 'User Not found.' });
+        return;
+      }
+
+      const passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+
+      if (!passwordIsValid) {
+        res.status(401).send({
+          accessToken: null,
+          message: 'Invalid Password!',
+        });
+        return;
+      }
+
+      const token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: 86400, // 24 hours
+      });
+
+      res.status(200).send({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        roles: user.role.name,
+        accessToken: token,
+      });
+    });
 };
