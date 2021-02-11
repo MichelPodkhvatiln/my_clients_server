@@ -3,7 +3,7 @@ const config = require('../config/auth.config.js');
 const db = require('../db');
 
 const UserModel = db.user;
-const RoleModel = db.roles;
+const RoleModel = db.role;
 
 const verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
@@ -28,21 +28,19 @@ const isAdmin = (req, res, next) => {
       return;
     }
 
-    RoleModel.find(
+    RoleModel.findOne(
       {
-        _id: { $in: user.roles },
+        _id: { $in: user.role },
       },
-      (err, roles) => {
+      (err, role) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
 
-        for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === 'admin') {
-            next();
-            return;
-          }
+        if (role.name === 'admin') {
+          next();
+          return;
         }
 
         res.status(403).send({ message: 'Require SuperAdmin Role!' });
@@ -60,19 +58,17 @@ const isMaster = (req, res, next) => {
 
     RoleModel.find(
       {
-        _id: { $in: user.roles },
+        _id: { $in: user.role },
       },
-      (err, roles) => {
+      (err, role) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
 
-        for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === 'master') {
-            next();
-            return;
-          }
+        if (role.name === 'master') {
+          next();
+          return;
         }
 
         res.status(403).send({ message: 'Require SuperAdmin Role!' });
