@@ -6,67 +6,62 @@ const db = require('../db');
 const UserModel = db.user;
 const RoleModel = db.role;
 
-exports.signup = (req, res) => {
-  if (req.body.role === 'admin') {
+exports.signup = async (req, res) => {
+  const reqRole = req.body.role;
+
+  if (reqRole === 'admin') {
     res
       .status(403)
       .send({ message: 'You cannot create a user with such a role' });
     return;
   }
 
-  const user = new UserModel({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8),
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+  const role = req.body.role;
+
+  if (!username) {
+    res.status(400).send({ message: 'Username is not entered!' });
+    return;
+  }
+
+  if (!email) {
+    res.status(400).send({ message: 'Email is not entered!' });
+    return;
+  }
+
+  if (!password) {
+    res.status(400).send({ message: 'Password is not entered!' });
+    return;
+  }
+
+  const newUser = new UserModel({
+    username,
+    email,
+    password: bcrypt.hashSync(password, 8),
   });
 
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+  try {
+    const user = await newUser.save();
 
-    if (req.body.role) {
-      RoleModel.findOne(
-        {
-          name: req.body.role,
-        },
-        (err, role) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
+    if (role) {
+      user.role = await RoleModel.findOne({ name: role }).exec();
 
-          user.role = role._id;
-          user.save((err) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-
-            res.send({ message: 'User was registered successfully!' });
-          });
-        }
-      );
-    } else {
-      RoleModel.findOne({ name: 'user' }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        user.role = role._id;
-        user.save((err) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          res.send({ message: 'User was registered successfully!' });
-        });
+      await user.save();
+      res.send({
+        message: `${user.role.name.toUpperCase()} was registered successfully!`,
       });
+    } else {
+      user.role = await RoleModel.findOne({ name: 'user' }).exec();
+
+      await user.save();
+      res.send({ message: 'User was registered successfully!' });
     }
-  });
+  } catch (error) {
+    await UserModel.findByIdAndDelete({ _id: newUser.id }).exec();
+    res.status(500).send({ message: error });
+  }
 };
 
 exports.signin = async (req, res) => {
