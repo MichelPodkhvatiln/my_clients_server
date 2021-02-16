@@ -8,8 +8,8 @@ const RoleModel = require('../models/RoleModel');
 const db = {
   roles: ['admin', 'master', 'user'],
   mongoose,
-  user: UserModel,
-  role: RoleModel,
+  userModel: UserModel,
+  roleModel: RoleModel,
 };
 
 module.exports = db;

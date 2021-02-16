@@ -1,50 +1,45 @@
 const mongoose = require('mongoose');
-const db = require('./index');
 const bcrypt = require('bcryptjs');
+const db = require('./index');
 
-const RoleModel = db.role;
-const UserModel = db.user;
+const RoleModel = db.roleModel;
+const UserModel = db.userModel;
 const roles = db.roles;
 
 function _createAdmin() {
-  RoleModel.estimatedDocumentCount((err, count) => {
+  RoleModel.estimatedDocumentCount(async (err, count) => {
     if (!err && count !== 0) {
-      RoleModel.findOne({ name: 'admin' }, (error, role) => {
-        if (error) {
-          console.log('error', error);
+      try {
+        const role = await RoleModel.findOne({ name: 'admin' }).exec();
+        const user = await UserModel.findOne({ role: role._id })
+          .populate('roles', '-__v')
+          .exec();
+
+        if (user) {
           return;
         }
 
-        UserModel.findOne({ role: role._id })
-          .populate('roles', '-__v')
-          .exec((error, user) => {
-            if (error) {
-              console.log('error', error);
-              return;
-            }
+        const admin = new UserModel({
+          username: 'admin',
+          email: process.env.ADMIN_EMAIL,
+          profile: {
+            name: {
+              firstName: 'Admin',
+              lastName: 'Admin',
+            },
+            phone: '',
+          },
+          password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 8),
+          role: role._id,
+        });
 
-            if (user) {
-              return;
-            }
+        const adminDoc = await admin.save();
 
-            const admin = new UserModel({
-              username: 'admin',
-              email: process.env.ADMIN_EMAIL,
-              password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 8),
-              role: role._id,
-            });
-
-            admin.save((error, user) => {
-              if (error) {
-                console.log('error', error);
-                return;
-              }
-
-              console.log(user);
-              console.log('Admin was registered successfully!');
-            });
-          });
-      });
+        console.log(adminDoc);
+        console.log('Admin was registered successfully!');
+      } catch (error) {
+        console.log('error', error);
+      }
     }
   });
 }

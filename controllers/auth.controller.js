@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 const config = require('../config/auth.config.js');
 const db = require('../db');
 
-const UserModel = db.user;
-const RoleModel = db.role;
+const UserModel = db.userModel;
+const RoleModel = db.roleModel;
 
 exports.signup = async (req, res) => {
   const reqRole = req.body.role;
@@ -64,13 +64,13 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.signin = async (req, res) => {
+exports.signIn = async (req, res) => {
   try {
-    const username = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
 
-    if (!username) {
-      res.status(400).send({ message: 'Username is not entered!' });
+    if (!email) {
+      res.status(400).send({ message: 'Email is not entered!' });
       return;
     }
 
@@ -79,7 +79,7 @@ exports.signin = async (req, res) => {
       return;
     }
 
-    const user = await UserModel.findOne({ username })
+    const user = await UserModel.findOne({ email })
       .populate('roles', '-__v')
       .exec();
 
