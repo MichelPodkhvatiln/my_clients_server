@@ -21,60 +21,36 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-const isAdmin = (req, res, next) => {
-  UserModel.findById(req.userId).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
+const isAdmin = async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.userId).exec();
+    const role = await RoleModel.findById(user.role).exec();
+
+    if (role.name === 'admin') {
+      next();
       return;
     }
 
-    RoleModel.findOne(
-      {
-        _id: { $in: user.role },
-      },
-      (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        if (role.name === 'admin') {
-          next();
-          return;
-        }
-
-        res.status(403).send({ message: 'Require SuperAdmin Role!' });
-      }
-    );
-  });
+    res.status(403).send({ message: 'Require Admin Role!' });
+  } catch (error) {
+    res.status(500).send({ message: error });
+  }
 };
 
-const isMaster = (req, res, next) => {
-  UserModel.findById(req.userId).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
+const isMaster = async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.userId).exec();
+    const role = await RoleModel.findById(user.role).exec();
+
+    if (role.name === 'master') {
+      next();
       return;
     }
 
-    RoleModel.find(
-      {
-        _id: { $in: user.role },
-      },
-      (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        if (role.name === 'master') {
-          next();
-          return;
-        }
-
-        res.status(403).send({ message: 'Require SuperAdmin Role!' });
-      }
-    );
-  });
+    res.status(403).send({ message: 'Require Master Role!' });
+  } catch (error) {
+    res.status(500).send({ message: error });
+  }
 };
 
 const authJwt = {
