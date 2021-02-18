@@ -6,7 +6,7 @@ const db = require('../db');
 const UserModel = db.userModel;
 const RoleModel = db.roleModel;
 
-exports.signup = async (req, res) => {
+exports.signUp = async (req, res) => {
   const reqRole = req.body.role;
 
   if (reqRole === 'admin') {
@@ -109,7 +109,6 @@ exports.signIn = async (req, res) => {
     const role = await RoleModel.findById({ _id: userRoleId }).exec();
 
     res.status(200).send({
-      id: user._id,
       username: user.username,
       email: user.email,
       role: role.name,
