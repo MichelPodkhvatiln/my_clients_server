@@ -108,11 +108,80 @@ exports.signIn = async (req, res) => {
     const userRoleId = user.role;
     const role = await RoleModel.findById({ _id: userRoleId }).exec();
 
+    user.token = token;
+    await user.save();
+
     res.status(200).send({
       username: user.username,
       email: user.email,
       role: role.name,
-      accessToken: token,
+      accessToken: user.token,
+    });
+  } catch (error) {
+    res.status(500).send({ message: error });
+  }
+};
+
+exports.logOut = async (req, res) => {
+  try {
+    const token = req.body.token;
+
+    if (!token) {
+      res.status(400).send({ message: 'Token is not entered!' });
+      return;
+    }
+
+    const user = await UserModel.findOne({ token })
+      .populate('roles', '-__v')
+      .exec();
+
+    if (!user) {
+      res.status(404).send({ message: 'User Not found.' });
+      return;
+    }
+
+    user.token = undefined;
+    await user.save();
+
+    res.status(200).send({ message: 'Log out successfully!' });
+  } catch (error) {
+    res.status(500).send({ message: error });
+  }
+};
+
+exports.signInByToken = async (req, res) => {
+  try {
+    const token = req.body.token;
+
+    if (!token) {
+      res.status(400).send({ message: 'Token is not entered!' });
+      return;
+    }
+
+    const user = await UserModel.findOne({ token })
+      .populate('roles', '-__v')
+      .exec();
+
+    if (!user) {
+      res.status(404).send({ message: 'User Not found.' });
+      return;
+    }
+
+    const newToken = jwt.sign({ id: user.id }, config.secret, {
+      expiresIn: 86400, // 24 hours
+    });
+
+    const userRoleId = user.role;
+    const role = await RoleModel.findById({ _id: userRoleId }).exec();
+
+    user.token = newToken;
+    await user.save();
+
+    res.status(200).send({
+      username: user.username,
+      email: user.email,
+      role: role.name,
+      accessToken: user.token,
     });
   } catch (error) {
     res.status(500).send({ message: error });

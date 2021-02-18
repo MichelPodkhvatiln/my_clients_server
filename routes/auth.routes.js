@@ -20,4 +20,8 @@ module.exports = (app) => {
   );
 
   app.post('/api/auth/sign-in', controller.signIn);
+
+  app.post('/api/auth/sign-in-by-token', controller.signInByToken);
+
+  app.post('/api/auth/log-out', controller.logOut);
 };
