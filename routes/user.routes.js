@@ -10,7 +10,7 @@ module.exports = (app) => {
     next();
   });
 
-  app.get('/api/user/get-user', [authJwt.verifyToken], controller.getUser);
+  app.post('/api/user/get-user', [authJwt.verifyToken], controller.getUser);
 
   // app.get('/api/test/all', controller.allAccess);
 
