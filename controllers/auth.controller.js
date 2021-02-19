@@ -64,7 +64,7 @@ exports.signUp = async (req, res) => {
   }
 };
 
-exports.signIn = async (req, res) => {
+exports.login = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;

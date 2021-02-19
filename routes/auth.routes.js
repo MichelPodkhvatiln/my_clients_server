@@ -19,7 +19,7 @@ module.exports = (app) => {
     controller.signUp
   );
 
-  app.post('/api/auth/sign-in', controller.signIn);
+  app.post('/api/auth/login', controller.login);
 
   app.post('/api/auth/sign-in-by-token', controller.signInByToken);
 
