@@ -1,4 +1,7 @@
-const whitelist = ['http://localhost:8080'];
+const whitelist = [
+  'http://localhost:8080',
+  'https://app-my-clients.herokuapp.com',
+];
 const corsConfig = {
   origin: (origin, callback) => {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
