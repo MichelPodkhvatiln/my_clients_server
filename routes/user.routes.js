@@ -11,20 +11,4 @@ module.exports = (app) => {
   });
 
   app.post('/api/user/get-user', [authJwt.verifyToken], controller.getUser);
-
-  // app.get('/api/test/all', controller.allAccess);
-
-  // app.get('/api/test/user', [authJwt.verifyToken], controller.userBoard);
-  //
-  // app.get(
-  //   '/api/test/master',
-  //   [authJwt.verifyToken, authJwt.isMaster],
-  //   controller.masterBoard
-  // );
-
-  // app.get(
-  //   '/api/test/admin',
-  //   [authJwt.verifyToken, authJwt.isAdmin],
-  //   controller.adminBoard
-  // );
 };
