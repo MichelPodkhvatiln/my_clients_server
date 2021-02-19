@@ -10,6 +10,8 @@ module.exports = (app) => {
     next();
   });
 
+  app.post('/api/auth/login', controller.login);
+
   app.post(
     '/api/auth/sign-up',
     [
@@ -18,10 +20,4 @@ module.exports = (app) => {
     ],
     controller.signUp
   );
-
-  app.post('/api/auth/login', controller.login);
-
-  app.post('/api/auth/sign-in-by-token', controller.signInByToken);
-
-  app.post('/api/auth/log-out', controller.logOut);
 };

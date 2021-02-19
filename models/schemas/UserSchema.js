@@ -17,9 +17,6 @@ const UserSchema = new Schema({
     required: true,
   },
   profile: ProfileSchema,
-  token: {
-    type: String,
-  },
   role: {
     type: Schema.Types.ObjectId,
     ref: 'role',
