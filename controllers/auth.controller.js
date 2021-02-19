@@ -119,27 +119,3 @@ exports.login = async (req, res) => {
     res.status(500).send({ message: error });
   }
 };
-
-exports.logOut = async (req, res) => {
-  try {
-    const token = req.body.token;
-
-    if (!token) {
-      res.status(400).send({ message: 'Token is not entered!' });
-      return;
-    }
-
-    const user = await UserModel.findOne({ token })
-      .populate('roles', '-__v')
-      .exec();
-
-    if (!user) {
-      res.status(404).send({ message: 'User Not found.' });
-      return;
-    }
-
-    res.status(200).send({ message: 'Log out successfully!' });
-  } catch (error) {
-    res.status(500).send({ message: error });
-  }
-};
