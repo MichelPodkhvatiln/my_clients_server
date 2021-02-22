@@ -13,20 +13,20 @@ exports.getAllSalons = async (req, res) => {
 
 exports.createSalon = async (req, res) => {
   try {
-    const data = req.body.data;
+    const name = req.body.name;
+    const locationInfo = req.body.locationInfo;
 
-    if (!data || !data.name.length || !data.locationInfo) {
-      res.status(400).send({ message: 'Data is not entered!' });
+    if (!name.length || !locationInfo) {
+      res.status(400).send({ message: 'Data is invalid!' });
       return;
     }
 
     const salon = new SalonModel({
-      name: data.name,
-      locationInfo: data.locationInfo,
+      name,
+      locationInfo,
     });
 
-    const salonDoc = await salon.save();
-    console.log(salonDoc);
+    await salon.save();
     res.status(200).send({ message: 'Salon added!' });
   } catch (error) {
     res.status(500).send({ message: error });
