@@ -2,33 +2,77 @@ const db = require('../db');
 
 const SalonModel = db.salonModel;
 
-exports.getAllSalons = async (req, res) => {
-  try {
-    const salonsList = await SalonModel.find({});
-    res.status(200).send({ salonsList });
-  } catch (error) {
-    res.status(500).send({ message: error });
-  }
+exports.getList = (req, res) => {
+  SalonModel.find({})
+    .lean()
+    .exec((err, salons) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      res.status(200).send(salons);
+    });
 };
 
-exports.createSalon = async (req, res) => {
-  try {
-    const name = req.body.name;
-    const locationInfo = req.body.locationInfo;
+exports.create = (req, res) => {
+  const name = req.body.name;
+  const locationInfo = req.body.locationInfo;
 
-    if (!name.length || !locationInfo) {
-      res.status(400).send({ message: 'Data is invalid!' });
+  if (!name.length || !locationInfo) {
+    res.status(400).send({ message: 'Invalid request data!' });
+    return;
+  }
+
+  const newSalon = new SalonModel({
+    name,
+    locationInfo,
+  });
+
+  newSalon.save((err, salon) => {
+    if (err) {
+      res.status(500).send({ message: err });
       return;
     }
 
-    const salon = new SalonModel({
-      name,
-      locationInfo,
-    });
+    res.status(200).send(salon);
+  });
+};
 
-    await salon.save();
-    res.status(200).send({ message: 'Salon added!' });
-  } catch (error) {
-    res.status(500).send({ message: error });
-  }
+exports.update = (req, res) => {
+  SalonModel.findById(req.params.id).exec((err, salon) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    salon.set(req.body);
+
+    salon.save((salonErr, updatedSalon) => {
+      if (err) {
+        res.status(500).send({ message: salonErr });
+        return;
+      }
+
+      res.status(200).send(updatedSalon);
+    });
+  });
+};
+
+exports.delete = (req, res) => {
+  SalonModel.findById(req.params.id).exec((err, salon) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    salon.remove((salonErr) => {
+      if (err) {
+        res.status(500).send({ message: salonErr });
+        return;
+      }
+
+      res.status(200).send(true);
+    });
+  });
 };
