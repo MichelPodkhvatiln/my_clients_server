@@ -17,16 +17,16 @@ exports.getList = (req, res) => {
 
 exports.create = (req, res) => {
   const name = req.body.name;
-  const locationInfo = req.body.locationInfo;
+  const location = req.body.location;
 
-  if (!name.length || !locationInfo) {
+  if (!name.length || !location) {
     res.status(400).send({ message: 'Invalid request data!' });
     return;
   }
 
   const newSalon = new SalonModel({
     name,
-    locationInfo,
+    location,
   });
 
   newSalon.save((err, salon) => {

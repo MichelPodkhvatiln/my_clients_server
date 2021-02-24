@@ -1,11 +1,16 @@
 const Schema = require('mongoose').Schema;
-const PointSchema = require('./PointSchema');
 
 const AddressSchema = new Schema({
   address: String,
-  location: {
-    type: PointSchema,
-    required: true,
+  coordinates: {
+    lat: {
+      type: Number,
+      required: true,
+    },
+    lng: {
+      type: Number,
+      required: true,
+    },
   },
 });
 

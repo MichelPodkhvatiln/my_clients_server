@@ -6,14 +6,14 @@ const SalonSchema = new Schema({
     type: String,
     required: true,
   },
-  locationInfo: {
+  location: {
     type: AddressSchema,
     required: true,
   },
-  masters: {
-    type: [Schema.Types.ObjectId],
-    // ref: "master"
-  },
+  // masters: {
+  //   type: [Schema.Types.ObjectId],
+  //   ref: "masters"
+  // },
 });
 
 module.exports = SalonSchema;
