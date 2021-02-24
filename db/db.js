@@ -70,6 +70,7 @@ const ConnectToMongoDB = async () => {
       useFindAndModify: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
+      autoIndex: process.env.NODE_ENV !== 'production',
     };
 
     await mongoose.connect(dbPath, mongooseConnectOptions);
