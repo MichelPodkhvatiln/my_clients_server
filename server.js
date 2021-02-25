@@ -12,19 +12,11 @@ app.use(cors(corsConfig));
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  res.header(
-    'Access-Control-Allow-Headers',
-    'x-access-token, Origin, Content-Type, Accept'
-  );
-  next();
-});
+app.use(require('./config/serverHeaders.config'));
 
-require('./routes/auth.routes')(app);
-require('./routes/user.routes')(app);
-require('./routes/salon.routes')(app);
+app.use('/api', require('./routes'));
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

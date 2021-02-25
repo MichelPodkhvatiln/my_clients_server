@@ -1,15 +1,13 @@
+const router = require('express').Router();
 const { verifySignUp } = require('../middlewares');
 const controller = require('../controllers/auth.controller');
 
-module.exports = (app) => {
-  app.post('/api/auth/login', controller.login);
+router.post('/login', controller.login);
 
-  app.post(
-    '/api/auth/signup',
-    [
-      verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted,
-    ],
-    controller.signUp
-  );
-};
+router.post(
+  '/sign-up',
+  [verifySignUp.checkDuplicateUsernameOrEmail, verifySignUp.checkRolesExisted],
+  controller.signUp
+);
+
+module.exports = router;
