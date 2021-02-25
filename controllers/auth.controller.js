@@ -68,7 +68,7 @@ exports.login = async (req, res) => {
       id: user.id,
       email: user.email,
       profile: user.profile,
-      role: user.name,
+      role: user.role,
       accessToken: token,
     });
   });

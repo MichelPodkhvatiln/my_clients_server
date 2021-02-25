@@ -1,37 +1,26 @@
 const db = require('../db');
 
 const UserModel = db.userModel;
-const RoleModel = db.roleModel;
 
-exports.getUser = async (req, res) => {
-  try {
-    const id = req.body.id;
-
-    if (!id) {
-      res.status(400).send({ message: 'UserID is not entered!' });
+exports.getUser = (req, res) => {
+  UserModel.findById({ _id: req.body.id }).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
       return;
     }
-
-    const user = await UserModel.findById({ _id: id })
-      .populate('roles', '-__v')
-      .exec();
 
     if (!user) {
       res.status(404).send({ message: 'User Not found.' });
       return;
     }
 
-    const userRoleId = user.role;
-    const role = await RoleModel.findById({ _id: userRoleId }).exec();
-
     res.status(200).send({
-      username: user.username,
+      id: user.id,
       email: user.email,
-      role: role.name,
+      profile: user.profile,
+      role: user.role,
     });
-  } catch (error) {
-    res.status(500).send({ message: error });
-  }
+  });
 };
 
 exports.allAccess = (req, res) => {
