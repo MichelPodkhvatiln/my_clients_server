@@ -6,7 +6,7 @@ router.post('/login', controller.login);
 
 router.post(
   '/sign-up',
-  [verifySignUp.checkDuplicateUsernameOrEmail, verifySignUp.checkRolesExisted],
+  [verifySignUp.checkDuplicateEmail, verifySignUp.checkAddingAdmin],
   controller.signUp
 );
 

@@ -12,7 +12,7 @@ app.use(cors(corsConfig));
 
 app.use(bodyParser.json());
 
-app.use(require('./config/serverHeaders.config'));
+app.use(require('./middlewares/serverHeaders'));
 
 app.use('/api', require('./routes'));
 
