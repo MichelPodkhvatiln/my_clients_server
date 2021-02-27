@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { authJwt } = require('../middlewares');
 const controller = require('../controllers/services.controller');
 
-router.post('/get-list', controller.getList);
+router.get('/get-list', controller.getList);
 
 router.post(
   '/create',
