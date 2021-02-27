@@ -67,7 +67,7 @@ exports.delete = (req, res) => {
     }
 
     salon.remove((salonErr) => {
-      if (err) {
+      if (salonErr) {
         res.status(500).send({ message: salonErr });
         return;
       }
