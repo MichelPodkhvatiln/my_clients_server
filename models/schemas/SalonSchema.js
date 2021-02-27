@@ -1,5 +1,4 @@
 const Schema = require('mongoose').Schema;
-const AddressSchema = require('./AddressSchema');
 
 const SalonSchema = new Schema({
   name: {
@@ -7,8 +6,20 @@ const SalonSchema = new Schema({
     required: true,
   },
   location: {
-    type: AddressSchema,
-    required: true,
+    address: {
+      type: String,
+      required: true,
+    },
+    coordinates: {
+      lat: {
+        type: Number,
+        required: true,
+      },
+      lng: {
+        type: Number,
+        required: true,
+      },
+    },
   },
   // masters: {
   //   type: [Schema.Types.ObjectId],

@@ -24,25 +24,11 @@ const UserSchema = new Schema({
   profile: {
     firstName: {
       type: String,
-      default: 'FirstName',
-      validate: {
-        validator: (value) => {
-          return value.trim().length;
-        },
-        message: 'This is not a valid firstname!',
-        isAsync: false,
-      },
+      required: true,
     },
     lastName: {
       type: String,
-      default: 'LastName',
-      validate: {
-        validator: (value) => {
-          return value.trim().length;
-        },
-        message: 'This is not a valid lastname!',
-        isAsync: false,
-      },
+      required: true,
     },
     phone: {
       type: String,
