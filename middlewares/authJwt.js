@@ -36,25 +36,8 @@ const isAdmin = (req, res, next) => {
   });
 };
 
-// const isMaster = async (req, res, next) => {
-//   try {
-//     const user = await UserModel.findById(req.userId).exec();
-//     const role = await RoleModel.findById(user.role).exec();
-//
-//     if (role.name === 'master') {
-//       next();
-//       return;
-//     }
-//
-//     res.status(403).send({ message: 'Require Master Role!' });
-//   } catch (error) {
-//     res.status(500).send({ message: error });
-//   }
-// };
-
 const authJwt = {
   verifyToken,
   isAdmin,
-  //isMaster,
 };
 module.exports = authJwt;
