@@ -6,6 +6,7 @@ const UserModel = require('../models/UserModel');
 const SalonModel = require('../models/SalonModel');
 const ServiceModel = require('../models/ServiceModel');
 const MasterModel = require('../models/MasterModel');
+const RecordModel = require('../models/RecordModel');
 
 const db = {
   mongoose,
@@ -13,6 +14,7 @@ const db = {
   salonModel: SalonModel,
   serviceModel: ServiceModel,
   masterModel: MasterModel,
+  recordModel: RecordModel,
 };
 
 module.exports = db;
