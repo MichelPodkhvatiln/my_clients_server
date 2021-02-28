@@ -2,12 +2,14 @@ const Schema = require('mongoose').Schema;
 const MasterDateInfoSchema = require('./MasterDateInfoSchema');
 
 const MasterSchema = new Schema({
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'user',
   },
-  salonId: {
+  salon: {
     type: Schema.Types.ObjectId,
+    ref: 'salon',
   },
   services: {
     type: [Schema.Types.ObjectId],
