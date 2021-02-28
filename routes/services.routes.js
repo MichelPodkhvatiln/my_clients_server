@@ -17,7 +17,7 @@ router.patch(
 );
 
 router.delete(
-  '/delete/:id',
+  '/remove/:id',
   [authJwt.verifyToken, authJwt.isAdmin],
   controller.delete
 );
