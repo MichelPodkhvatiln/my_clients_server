@@ -41,6 +41,7 @@ exports.getList = (req, res) => {
             lastName: masterDoc.user.profile.lastName,
           },
           salonInfo: {
+            id: masterDoc.salon._id,
             name: masterDoc.salon.name,
           },
         };
