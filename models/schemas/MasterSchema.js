@@ -14,6 +14,9 @@ const MasterSchema = new Schema({
   services: {
     type: [Schema.Types.ObjectId],
   },
+  workDays: {
+    type: [Number], // 1...7
+  },
   datesInfo: {
     type: [MasterDateInfoSchema],
   },
