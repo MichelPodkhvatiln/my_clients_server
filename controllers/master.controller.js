@@ -4,22 +4,35 @@ const db = require('../db');
 const UserModel = db.userModel;
 const MasterModel = db.masterModel;
 
-function removeUser(userId, res) {
-  UserModel.findById(userId).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+function parseListMasterData(master) {
+  return {
+    id: master._id,
+    userInfo: {
+      firstName: master.user.profile.firstName,
+      lastName: master.user.profile.lastName,
+    },
+    salonInfo: {
+      id: master.salon._id,
+      name: master.salon.name,
+    },
+  };
+}
 
-    user.remove((userErr) => {
-      if (userErr) {
-        res.status(500).send({ message: userErr });
-        return;
-      }
-
-      res.status(200).send({ message: 'User deleted!' });
-    });
-  });
+function parseDetailMasterData(master) {
+  return {
+    id: master._id,
+    userInfo: {
+      firstName: master.user.profile.firstName,
+      lastName: master.user.profile.lastName,
+      email: master.user.email,
+    },
+    salonInfo: {
+      id: master.salon._id,
+      name: master.salon.name,
+    },
+    workDays: master.workDays,
+    services: master.services,
+  };
 }
 
 exports.getList = (req, res) => {
@@ -34,17 +47,7 @@ exports.getList = (req, res) => {
       }
 
       const formattedList = mastersList.map((masterDoc) => {
-        return {
-          id: masterDoc._id,
-          userInfo: {
-            firstName: masterDoc.user.profile.firstName,
-            lastName: masterDoc.user.profile.lastName,
-          },
-          salonInfo: {
-            id: masterDoc.salon._id,
-            name: masterDoc.salon.name,
-          },
-        };
+        return parseListMasterData(masterDoc);
       });
 
       res.status(200).send(formattedList);
@@ -62,7 +65,9 @@ exports.getDetailedMasterInfo = (req, res) => {
         return;
       }
 
-      res.status(200).send(master);
+      const data = parseDetailMasterData(master);
+
+      res.status(200).send(data);
     });
 };
 
@@ -96,12 +101,49 @@ exports.create = (req, res) => {
 
     newMaster.save((masterErr, master) => {
       if (masterErr) {
-        removeUser(user._id, res);
         res.status(500).send({ message: masterErr });
         return;
       }
 
-      res.status(200).send(master);
+      const data = parseListMasterData(master);
+
+      res.status(200).send(data);
+    });
+  });
+};
+
+exports.changeSalon = (req, res) => {
+  const masterId = req.body.masterId;
+  const newSalonId = req.body.salonId;
+
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    master.salon = newSalonId;
+
+    master.save((updatedMasterErr, updatedMaster) => {
+      if (updatedMasterErr) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      MasterModel.findById(updatedMaster._id)
+        .populate('user')
+        .populate('salon')
+        .lean()
+        .exec((masterErr, masterDoc) => {
+          if (masterErr) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          const data = parseDetailMasterData(masterDoc);
+
+          res.status(200).send(data);
+        });
     });
   });
 };

@@ -12,4 +12,10 @@ router.post(
   controller.create
 );
 
+router.post(
+  '/change-salon',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.changeSalon
+);
+
 module.exports = router;
