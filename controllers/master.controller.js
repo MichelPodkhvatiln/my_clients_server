@@ -3,6 +3,7 @@ const db = require('../db');
 
 const UserModel = db.userModel;
 const MasterModel = db.masterModel;
+const SalonModule = db.salonModel;
 
 function parseListMasterData(master) {
   return {
@@ -105,32 +106,7 @@ exports.create = (req, res) => {
         return;
       }
 
-      const data = parseListMasterData(master);
-
-      res.status(200).send(data);
-    });
-  });
-};
-
-exports.changeSalon = (req, res) => {
-  const masterId = req.body.masterId;
-  const newSalonId = req.body.salonId;
-
-  MasterModel.findById(masterId).exec((err, master) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
-    master.salon = newSalonId;
-
-    master.save((updatedMasterErr, updatedMaster) => {
-      if (updatedMasterErr) {
-        res.status(500).send({ message: err });
-        return;
-      }
-
-      MasterModel.findById(updatedMaster._id)
+      MasterModel.findById(master._id)
         .populate('user')
         .populate('salon')
         .lean()
@@ -140,10 +116,58 @@ exports.changeSalon = (req, res) => {
             return;
           }
 
-          const data = parseDetailMasterData(masterDoc);
+          const data = parseListMasterData(masterDoc);
 
           res.status(200).send(data);
         });
+    });
+  });
+};
+
+exports.changeSalon = (req, res) => {
+  const masterId = req.body.masterId;
+  const newSalonId = req.body.salonId;
+
+  SalonModule.findById(newSalonId).exec((salonErr, salonDoc) => {
+    if (salonErr) {
+      res.status(500).send({ message: salonErr });
+      return;
+    }
+
+    if (!salonDoc) {
+      res.status(400).send({ message: 'Invalid salon id!' });
+      return;
+    }
+
+    MasterModel.findById(masterId).exec((err, master) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      master.salon = newSalonId;
+
+      master.save((updatedMasterErr, updatedMaster) => {
+        if (updatedMasterErr) {
+          res.status(500).send({ message: err });
+          return;
+        }
+
+        MasterModel.findById(updatedMaster._id)
+          .populate('user')
+          .populate('salon')
+          .lean()
+          .exec((masterErr, masterDoc) => {
+            if (masterErr) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            const data = parseDetailMasterData(masterDoc);
+
+            res.status(200).send(data);
+          });
+      });
     });
   });
 };
