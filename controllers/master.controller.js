@@ -207,3 +207,39 @@ exports.changeWorkDays = (req, res) => {
     });
   });
 };
+
+exports.changeServices = (req, res) => {
+  const masterId = req.body.masterId;
+  const newServices = req.body.services;
+
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    master.services = newServices;
+
+    master.save((updatedMasterErr, updatedMaster) => {
+      if (updatedMasterErr) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      MasterModel.findById(updatedMaster._id)
+        .populate('user')
+        .populate('salon')
+        .lean()
+        .exec((masterErr, masterDoc) => {
+          if (masterErr) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          const data = parseDetailMasterData(masterDoc);
+
+          res.status(200).send(data);
+        });
+    });
+  });
+};

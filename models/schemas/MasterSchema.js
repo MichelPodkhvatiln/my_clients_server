@@ -11,9 +11,12 @@ const MasterSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'salon',
   },
-  services: {
-    type: [Schema.Types.ObjectId],
-  },
+  services: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'service',
+    },
+  ],
   workDays: {
     type: [Number], // 1...7
   },

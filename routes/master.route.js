@@ -24,4 +24,10 @@ router.post(
   controller.changeWorkDays
 );
 
+router.post(
+  '/change-services',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.changeServices
+);
+
 module.exports = router;
