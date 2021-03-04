@@ -171,3 +171,39 @@ exports.changeSalon = (req, res) => {
     });
   });
 };
+
+exports.changeWorkDays = (req, res) => {
+  const masterId = req.body.masterId;
+  const newWorkDays = req.body.workDays;
+
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    master.workDays = newWorkDays;
+
+    master.save((updatedMasterErr, updatedMaster) => {
+      if (updatedMasterErr) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      MasterModel.findById(updatedMaster._id)
+        .populate('user')
+        .populate('salon')
+        .lean()
+        .exec((masterErr, masterDoc) => {
+          if (masterErr) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          const data = parseDetailMasterData(masterDoc);
+
+          res.status(200).send(data);
+        });
+    });
+  });
+};

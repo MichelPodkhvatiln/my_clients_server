@@ -18,4 +18,10 @@ router.post(
   controller.changeSalon
 );
 
+router.post(
+  '/change-work-days',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.changeWorkDays
+);
+
 module.exports = router;
