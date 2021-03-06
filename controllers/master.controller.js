@@ -12,10 +12,12 @@ function parseListMasterData(master) {
       firstName: master.user.profile.firstName,
       lastName: master.user.profile.lastName,
     },
-    salonInfo: {
-      id: master.salon._id,
-      name: master.salon.name,
-    },
+    salonInfo: master.salon
+      ? {
+          id: master.salon._id,
+          name: master.salon.name,
+        }
+      : null,
   };
 }
 
@@ -27,10 +29,12 @@ function parseDetailMasterData(master) {
       lastName: master.user.profile.lastName,
       email: master.user.email,
     },
-    salonInfo: {
-      id: master.salon._id,
-      name: master.salon.name,
-    },
+    salonInfo: master.salon
+      ? {
+          id: master.salon._id,
+          name: master.salon.name,
+        }
+      : null,
     workDays: master.workDays,
     services: master.services,
   };
@@ -134,18 +138,13 @@ exports.changeSalon = (req, res) => {
       return;
     }
 
-    if (!salonDoc) {
-      res.status(400).send({ message: 'Invalid salon id!' });
-      return;
-    }
-
     MasterModel.findById(masterId).exec((err, master) => {
       if (err) {
         res.status(500).send({ message: err });
         return;
       }
 
-      master.salon = newSalonId;
+      master.salon = salonDoc ? newSalonId : null;
 
       master.save((updatedMasterErr, updatedMaster) => {
         if (updatedMasterErr) {
