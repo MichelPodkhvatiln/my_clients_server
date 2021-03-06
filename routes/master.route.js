@@ -9,7 +9,13 @@ router.get('/get-master/:id', controller.getDetailedMasterInfo);
 router.post(
   '/create',
   [verifySignUp.checkDuplicateEmail, authJwt.verifyToken, authJwt.isAdmin],
-  controller.create
+  controller.createMaster
+);
+
+router.delete(
+  '/remove/:id',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.removeMaster
 );
 
 router.post(

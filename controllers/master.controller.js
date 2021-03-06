@@ -76,7 +76,7 @@ exports.getDetailedMasterInfo = (req, res) => {
     });
 };
 
-exports.create = (req, res) => {
+exports.createMaster = (req, res) => {
   const newUserData = {
     email: req.body.email,
     password: req.body.password
@@ -97,7 +97,7 @@ exports.create = (req, res) => {
       return;
     }
 
-    const salonId = req.body.salonId ? req.body.salonId : undefined;
+    const salonId = req.body.salonId ? req.body.salonId : null;
 
     const newMaster = new MasterModel({
       user: user._id,
@@ -124,6 +124,26 @@ exports.create = (req, res) => {
 
           res.status(200).send(data);
         });
+    });
+  });
+};
+
+exports.removeMaster = (req, res) => {
+  const masterId = req.params.id;
+
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    master.remove((masterErr) => {
+      if (masterErr) {
+        res.status(500).send({ message: masterErr });
+        return;
+      }
+
+      res.status(200).send(true);
     });
   });
 };
