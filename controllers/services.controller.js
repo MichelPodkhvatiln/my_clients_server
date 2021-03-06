@@ -1,6 +1,7 @@
 const db = require('../db');
 
 const ServiceModel = db.serviceModel;
+const MasterModel = db.masterModel;
 
 exports.getList = (req, res) => {
   ServiceModel.find({})

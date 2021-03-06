@@ -40,7 +40,7 @@ const ConnectToMongoDB = async () => {
     const dbPath = process.env.MONGODB_URL;
     const mongooseConnectOptions = {
       useNewUrlParser: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
       useUnifiedTopology: true,
       useCreateIndex: true,
       autoIndex: process.env.NODE_ENV !== 'production',
