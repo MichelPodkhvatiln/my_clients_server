@@ -18,7 +18,7 @@ router.delete(
   controller.removeMaster
 );
 
-router.post(
+router.patch(
   '/change-info/:id',
   [authJwt.verifyToken, authJwt.isAdmin],
   controller.changeInfo
