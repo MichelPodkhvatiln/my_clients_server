@@ -19,6 +19,12 @@ router.delete(
 );
 
 router.post(
+  '/change-info/:id',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.changeInfo
+);
+
+router.post(
   '/change-salon',
   [authJwt.verifyToken, authJwt.isAdmin],
   controller.changeSalon

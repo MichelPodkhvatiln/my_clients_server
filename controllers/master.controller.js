@@ -148,6 +148,50 @@ exports.removeMaster = (req, res) => {
   });
 };
 
+exports.changeInfo = (req, res) => {
+  const masterId = req.params.id;
+  const newProfileInfo = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+  };
+
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (!master) {
+      res.status(400).send({ message: 'Master not find!' });
+      return;
+    }
+
+    UserModel.findByIdAndUpdate(master.user, { profile: newProfileInfo }).exec(
+      (userErr) => {
+        if (userErr) {
+          res.status(500).send({ message: userErr });
+          return;
+        }
+
+        MasterModel.findById(masterId)
+          .populate('user')
+          .populate('salon')
+          .lean()
+          .exec((masterErr, masterDoc) => {
+            if (masterErr) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            const data = parseDetailMasterData(masterDoc);
+
+            res.status(200).send(data);
+          });
+      }
+    );
+  });
+};
+
 exports.changeSalon = (req, res) => {
   const masterId = req.body.masterId;
   const newSalonId = req.body.salonId;
