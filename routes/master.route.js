@@ -18,6 +18,24 @@ router.delete(
   controller.removeMaster
 );
 
+router.patch(
+  '/change-info/:id',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.changeInfo
+);
+
+router.patch(
+  '/change-email/:id',
+  [verifySignUp.checkDuplicateEmail, authJwt.verifyToken, authJwt.isAdmin],
+  controller.changeEmail
+);
+
+router.patch(
+  '/change-password/:id',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.changePassword
+);
+
 router.post(
   '/change-salon',
   [authJwt.verifyToken, authJwt.isAdmin],
