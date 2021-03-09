@@ -54,4 +54,16 @@ router.post(
   controller.changeServices
 );
 
+router.post(
+  '/add-date-info',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.addDateInfo
+);
+
+router.delete(
+  '/remove-date-info',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.removeDateInfo
+);
+
 module.exports = router;

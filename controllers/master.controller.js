@@ -38,6 +38,7 @@ function parseDetailMasterData(master) {
       : null,
     workDays: master.workDays,
     services: master.services,
+    datesInfo: master.datesInfo ?? [],
   };
 }
 
@@ -369,6 +370,107 @@ exports.changeServices = (req, res) => {
     master.save((updatedMasterErr, updatedMaster) => {
       if (updatedMasterErr) {
         res.status(500).send({ message: err });
+        return;
+      }
+
+      MasterModel.findById(updatedMaster._id)
+        .populate('user')
+        .populate('salon')
+        .lean()
+        .exec((masterErr, masterDoc) => {
+          if (masterErr) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          const data = parseDetailMasterData(masterDoc);
+
+          res.status(200).send(data);
+        });
+    });
+  });
+};
+
+exports.addDateInfo = (req, res) => {
+  const masterId = req.body.masterId;
+  const day = req.body.day;
+  const time = req.body.time;
+
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err || !master) {
+      const status = err ? 500 : 400;
+      const message = err ?? 'User not found!';
+
+      res.status(status).send({ message });
+      return;
+    }
+
+    const isValidDay = master.workDays.includes(day);
+
+    if (!isValidDay) {
+      res.status(400).send({ message: 'Invalid master wordday!' });
+      return;
+    }
+
+    const newDateInfo = {
+      day,
+      time,
+      recordInfo: null,
+    };
+
+    master.datesInfo.push(newDateInfo);
+
+    master.save((masterErr, updatedMaster) => {
+      if (masterErr) {
+        res.status(500).send({ message: masterErr });
+        return;
+      }
+
+      MasterModel.findById(updatedMaster._id)
+        .populate('user')
+        .populate('salon')
+        .lean()
+        .exec((masterErr, masterDoc) => {
+          if (masterErr) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          const data = parseDetailMasterData(masterDoc);
+
+          res.status(200).send(data);
+        });
+    });
+  });
+};
+
+exports.removeDateInfo = (req, res) => {
+  const masterId = req.body.masterId;
+  const dateInfoId = req.body.dateInfoId;
+
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err || !master) {
+      const status = err ? 500 : 400;
+      const message = err ?? 'User not found!';
+
+      res.status(status).send({ message });
+      return;
+    }
+
+    const index = master.datesInfo.findIndex((dateInfo) => {
+      return String(dateInfo._id) === dateInfoId;
+    });
+
+    if (index === -1) {
+      res.status(400).send({ message: 'Date info not found for this master' });
+      return;
+    }
+
+    master.datesInfo.splice(index, 1);
+
+    master.save((masterErr, updatedMaster) => {
+      if (masterErr) {
+        res.status(500).send({ message: masterErr });
         return;
       }
 
