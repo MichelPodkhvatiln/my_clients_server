@@ -1,5 +1,4 @@
 const Schema = require('mongoose').Schema;
-const MasterDateInfoSchema = require('./MasterDateInfoSchema');
 
 const MasterSchema = new Schema({
   user: {
@@ -21,7 +20,23 @@ const MasterSchema = new Schema({
     type: [Number], // 1...7
   },
   datesInfo: {
-    type: [MasterDateInfoSchema],
+    type: [
+      {
+        day: {
+          type: Number,
+          enum: [1, 2, 3, 4, 5, 6, 7],
+          required: true,
+        },
+        time: {
+          type: String,
+          required: true,
+        },
+        recordInfo: {
+          type: Schema.Types.ObjectId,
+          ref: 'record',
+        },
+      },
+    ],
   },
 });
 
