@@ -413,7 +413,7 @@ exports.addDateInfo = (req, res) => {
     }
 
     const isInvalidTime = master.datesInfo.some(
-      (dateInfo) => dateInfo.time === time
+      (dateInfo) => dateInfo.day === day && dateInfo.time === time
     );
 
     if (isInvalidTime) {
