@@ -475,6 +475,14 @@ exports.removeDateInfo = (req, res) => {
       return;
     }
 
+    if (master.datesInfo[index].recordInfo) {
+      res.status(400).send({
+        message:
+          'Date info has record! Remove or replace record before deleting',
+      });
+      return;
+    }
+
     master.datesInfo.splice(index, 1);
 
     master.save((masterErr, updatedMaster) => {

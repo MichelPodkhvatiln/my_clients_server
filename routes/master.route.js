@@ -60,7 +60,7 @@ router.post(
   controller.addDateInfo
 );
 
-router.delete(
+router.post(
   '/remove-date-info',
   [authJwt.verifyToken, authJwt.isAdmin],
   controller.removeDateInfo
