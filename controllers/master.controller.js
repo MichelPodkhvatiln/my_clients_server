@@ -408,7 +408,16 @@ exports.addDateInfo = (req, res) => {
     const isValidDay = master.workDays.includes(day);
 
     if (!isValidDay) {
-      res.status(400).send({ message: 'Invalid master wordday!' });
+      res.status(400).send({ message: 'Invalid master workday!' });
+      return;
+    }
+
+    const isInvalidTime = master.datesInfo.some(
+      (dateInfo) => dateInfo.time === time
+    );
+
+    if (isInvalidTime) {
+      res.status(400).send({ message: 'This time is already is exist!' });
       return;
     }
 
