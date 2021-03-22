@@ -15,6 +15,17 @@ exports.getList = (req, res) => {
     });
 };
 
+exports.getById = (req, res) => {
+  SalonModel.findById(req.params.id).exec((err, salon) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    res.status(200).send(salon);
+  });
+};
+
 exports.create = (req, res) => {
   const name = req.body.name;
   const location = req.body.location;

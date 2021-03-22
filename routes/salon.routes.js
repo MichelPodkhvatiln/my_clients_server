@@ -4,6 +4,8 @@ const controller = require('../controllers/salon.controller');
 
 router.get('/get-list', controller.getList);
 
+router.get('/get/:id', controller.getById);
+
 router.post(
   '/create',
   [authJwt.verifyToken, authJwt.isAdmin],
