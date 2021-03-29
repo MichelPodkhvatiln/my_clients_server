@@ -33,7 +33,6 @@ const MasterSchema = new Schema({
         },
         recordInfo: {
           type: Schema.Types.ObjectId,
-          ref: 'record',
         },
       },
     ],
