@@ -84,6 +84,7 @@ exports.getDetailedMasterInfo = (req, res) => {
   MasterModel.findById(req.params.id)
     .populate('user')
     .populate('salon')
+    .populate('datesInfo.recordInfo')
     .lean()
     .exec((err, master) => {
       if (err) {

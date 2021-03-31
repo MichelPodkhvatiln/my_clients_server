@@ -31,7 +31,12 @@ const MasterSchema = new Schema({
           type: String,
           required: true,
         },
-        recordInfo: [Schema.Types.ObjectId],
+        recordInfo: [
+          {
+            type: Schema.Types.ObjectId,
+            ref: 'record',
+          },
+        ],
       },
     ],
   },
