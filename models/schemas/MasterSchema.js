@@ -31,9 +31,7 @@ const MasterSchema = new Schema({
           type: String,
           required: true,
         },
-        recordInfo: {
-          type: Schema.Types.ObjectId,
-        },
+        recordInfo: [Schema.Types.ObjectId],
       },
     ],
   },

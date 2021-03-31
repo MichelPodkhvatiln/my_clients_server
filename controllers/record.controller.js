@@ -1,8 +1,12 @@
 const db = require('../db');
 
 const RecordModel = db.recordModel;
+const MasterModel = db.masterModel;
 
 exports.addRecord = (req, res) => {
+  const dateInfoId = req.body.dateInfoId;
+  const masterId = req.body.masterInfo.masterId;
+
   const salonInfo = {
     name: req.body.salonInfo.name,
   };
@@ -20,11 +24,56 @@ exports.addRecord = (req, res) => {
     lastName: req.body.userInfo.lastName,
     phone: req.body.userInfo.phone,
   };
+  const date = req.body.date;
 
-  res.status(200).send({
-    salonInfo,
-    masterInfo,
-    serviceInfo,
-    userInfo,
+  MasterModel.findById(masterId).exec((err, master) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (!master) {
+      res.status(400).send({ message: 'Master not find!' });
+      return;
+    }
+
+    const dateInfo = master.datesInfo.find(
+      (dateInfo) => String(dateInfo._id) === dateInfoId
+    );
+
+    if (!dateInfo) {
+      res.status(400).send({ message: 'Date info not find!' });
+      return;
+    }
+
+    const recordData = new RecordModel({
+      salonInfo,
+      masterInfo,
+      serviceInfo,
+      userInfo,
+      date,
+    });
+
+    recordData.save((recordErr, record) => {
+      if (recordErr) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (!dateInfo.recordInfo) {
+        dateInfo.recordInfo = [record._id];
+      } else {
+        dateInfo.recordInfo.push(record._id);
+      }
+
+      master.save((masterErr, updatedMaster) => {
+        if (masterErr) {
+          res.status(500).send({ message: err });
+          return;
+        }
+
+        res.status(200).send(updatedMaster);
+      });
+    });
   });
 };

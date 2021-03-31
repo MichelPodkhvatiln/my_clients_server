@@ -49,6 +49,10 @@ const RecordSchema = new Schema({
       },
     },
   },
+  date: {
+    type: Date,
+    required: true,
+  },
 });
 
 module.exports = RecordSchema;
