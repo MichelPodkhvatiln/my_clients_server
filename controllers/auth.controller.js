@@ -15,6 +15,7 @@ exports.signUp = (req, res) => {
     profile: {
       firstName: req.body.firstName ? req.body.firstName : 'FirstName',
       lastName: req.body.lastName ? req.body.lastName : 'LastName',
+      phone: req.body.phone,
     },
   };
 
