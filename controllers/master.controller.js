@@ -61,10 +61,30 @@ exports.getList = (req, res) => {
     });
 };
 
+exports.getSalonMasters = (req, res) => {
+  MasterModel.find({ salon: req.params.salonId })
+    .populate('user')
+    .populate('salon')
+    .lean()
+    .exec((err, mastersList) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      const formattedList = mastersList.map((masterDoc) => {
+        return parseListMasterData(masterDoc);
+      });
+
+      res.status(200).send(formattedList);
+    });
+};
+
 exports.getDetailedMasterInfo = (req, res) => {
   MasterModel.findById(req.params.id)
     .populate('user')
     .populate('salon')
+    .populate('datesInfo.recordInfo')
     .lean()
     .exec((err, master) => {
       if (err) {

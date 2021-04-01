@@ -1,18 +1,56 @@
+const validator = require('validator');
 const Schema = require('mongoose').Schema;
 
 const RecordSchema = new Schema({
-  master: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'master',
+  salonInfo: {
+    name: {
+      type: String,
+      required: true,
+    },
   },
-  service: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'service',
+  masterInfo: {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
   },
-  userId: {
-    type: Schema.Types.ObjectId,
+  serviceInfo: {
+    name: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    comment: {
+      type: String,
+    },
+  },
+  userInfo: {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      validate: {
+        validator: validator.isMobilePhone,
+        message: '{VALUE} is not a valid lastname!',
+        isAsync: false,
+      },
+    },
+  },
+  date: {
+    type: Date,
     required: true,
   },
 });

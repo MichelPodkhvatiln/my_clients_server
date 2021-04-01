@@ -31,10 +31,12 @@ const MasterSchema = new Schema({
           type: String,
           required: true,
         },
-        recordInfo: {
-          type: Schema.Types.ObjectId,
-          ref: 'record',
-        },
+        recordInfo: [
+          {
+            type: Schema.Types.ObjectId,
+            ref: 'record',
+          },
+        ],
       },
     ],
   },

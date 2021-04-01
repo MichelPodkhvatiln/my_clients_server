@@ -4,6 +4,8 @@ const controller = require('../controllers/master.controller');
 
 router.get('/get-list', controller.getList);
 
+router.get('/get-salon-masters/:salonId', controller.getSalonMasters);
+
 router.get('/get-master/:id', controller.getDetailedMasterInfo);
 
 router.post(
