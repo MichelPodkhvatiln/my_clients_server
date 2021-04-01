@@ -33,7 +33,7 @@ exports.addRecord = (req, res) => {
     }
 
     if (!master) {
-      res.status(400).send({ message: 'Master not find!' });
+      res.status(400).send({ message: 'Master not found!' });
       return;
     }
 
@@ -42,7 +42,7 @@ exports.addRecord = (req, res) => {
     );
 
     if (!dateInfo) {
-      res.status(400).send({ message: 'Date info not find!' });
+      res.status(400).send({ message: 'Date info not found!' });
       return;
     }
 
