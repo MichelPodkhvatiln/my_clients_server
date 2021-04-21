@@ -73,3 +73,35 @@ exports.updateProfile = (req, res) => {
     });
   });
 };
+
+exports.updateEmail = (req, res) => {
+  const userId = req.params.userId;
+
+  if (!validator.isEmail(req.body.email)) {
+    res.status(400).send({ message: 'Invalid email value!' });
+    return;
+  }
+
+  UserModel.findById(userId).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: `DB error: ${err}` });
+      return;
+    }
+
+    if (!user) {
+      res.status(400).send({ message: 'User not found!' });
+      return;
+    }
+
+    user.email = req.body.email;
+
+    user.save((userErr, updatedUser) => {
+      if (err) {
+        res.status(500).send({ message: `DB error: ${userErr}` });
+        return;
+      }
+
+      res.status(200).send(updatedUser);
+    });
+  });
+};

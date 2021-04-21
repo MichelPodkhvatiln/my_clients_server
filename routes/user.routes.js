@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { authJwt } = require('../middlewares');
+const { authJwt, verifySignUp } = require('../middlewares');
 const controller = require('../controllers/user.controller');
 
 router.post('/get-user', [authJwt.verifyToken], controller.getUser);
@@ -8,6 +8,12 @@ router.patch(
   '/updateProfile/:userId',
   [authJwt.verifyToken],
   controller.updateProfile
+);
+
+router.patch(
+  '/updateEmail/:userId',
+  [authJwt.verifyToken, verifySignUp.checkDuplicateEmail],
+  controller.updateEmail
 );
 
 module.exports = router;
