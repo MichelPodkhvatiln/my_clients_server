@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const db = require('../db');
 
@@ -107,5 +108,25 @@ exports.updateEmail = (req, res) => {
 
       res.status(200).send(formattedUserResponse(updatedUser));
     });
+  });
+};
+
+exports.updatePassword = (req, res) => {
+  const userId = req.params.userId;
+
+  if (!validator.isLength(req.body.password, { min: 8 })) {
+    res.status(400).send({ message: 'Invalid password' });
+    return;
+  }
+
+  UserModel.findByIdAndUpdate(userId, {
+    password: bcrypt.hashSync(req.body.password, 8),
+  }).exec((userErr) => {
+    if (userErr) {
+      res.status(500).send({ message: `DB error: ${userErr}` });
+      return;
+    }
+
+    res.status(200).send({ message: 'Password successful updated!' });
   });
 };

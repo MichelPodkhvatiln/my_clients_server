@@ -16,4 +16,10 @@ router.patch(
   controller.updateEmail
 );
 
+router.patch(
+  '/updatePassword/:userId',
+  [authJwt.verifyToken],
+  controller.updatePassword
+);
+
 module.exports = router;
