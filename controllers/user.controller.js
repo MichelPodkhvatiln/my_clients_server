@@ -3,6 +3,15 @@ const db = require('../db');
 
 const UserModel = db.userModel;
 
+function formattedUserResponse(user) {
+  return {
+    id: user.id,
+    email: user.email,
+    profile: user.profile,
+    role: user.role,
+  };
+}
+
 exports.getUser = (req, res) => {
   UserModel.findById({ _id: req.body.id }).exec((err, user) => {
     if (err) {
@@ -15,12 +24,7 @@ exports.getUser = (req, res) => {
       return;
     }
 
-    res.status(200).send({
-      id: user.id,
-      email: user.email,
-      profile: user.profile,
-      role: user.role,
-    });
+    res.status(200).send(formattedUserResponse(user));
   });
 };
 
@@ -69,7 +73,7 @@ exports.updateProfile = (req, res) => {
         return;
       }
 
-      res.status(200).send(updatedUser);
+      res.status(200).send(formattedUserResponse(updatedUser));
     });
   });
 };
@@ -101,7 +105,7 @@ exports.updateEmail = (req, res) => {
         return;
       }
 
-      res.status(200).send(updatedUser);
+      res.status(200).send(formattedUserResponse(updatedUser));
     });
   });
 };
