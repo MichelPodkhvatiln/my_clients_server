@@ -74,7 +74,10 @@ exports.updateProfile = (req, res) => {
         return;
       }
 
-      res.status(200).send(formattedUserResponse(updatedUser));
+      res.status(200).send({
+        field: req.body.field,
+        value: updatedUser.profile[req.body.field],
+      });
     });
   });
 };
@@ -106,7 +109,10 @@ exports.updateEmail = (req, res) => {
         return;
       }
 
-      res.status(200).send(formattedUserResponse(updatedUser));
+      res.status(200).send({
+        field: 'email',
+        value: updatedUser.email,
+      });
     });
   });
 };

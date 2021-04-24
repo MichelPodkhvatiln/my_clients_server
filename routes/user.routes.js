@@ -6,19 +6,23 @@ router.post('/get-user', [authJwt.verifyToken], controller.getUser);
 
 router.patch(
   '/updateProfile/:userId',
-  [authJwt.verifyToken],
+  [authJwt.verifyToken, verifySignUp.checkChangingAdmin],
   controller.updateProfile
 );
 
 router.patch(
   '/updateEmail/:userId',
-  [authJwt.verifyToken, verifySignUp.checkDuplicateEmail],
+  [
+    authJwt.verifyToken,
+    verifySignUp.checkChangingAdmin,
+    verifySignUp.checkDuplicateEmail,
+  ],
   controller.updateEmail
 );
 
 router.patch(
   '/updatePassword/:userId',
-  [authJwt.verifyToken],
+  [authJwt.verifyToken, verifySignUp.checkChangingAdmin],
   controller.updatePassword
 );
 
