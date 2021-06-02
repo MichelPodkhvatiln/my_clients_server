@@ -184,7 +184,7 @@ exports.changeInfo = (req, res) => {
     }
 
     if (!master) {
-      res.status(400).send({ message: 'Master not find!' });
+      res.status(400).send({ message: 'Master not found!' });
       return;
     }
 

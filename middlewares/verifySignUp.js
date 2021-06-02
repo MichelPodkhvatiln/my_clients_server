@@ -29,9 +29,28 @@ const checkAddingAdmin = (req, res, next) => {
   next();
 };
 
+const checkChangingAdmin = (req, res, next) => {
+  UserModel.findById(req.params.userId).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: `DB error: ${err}` });
+      return;
+    }
+
+    if (user?.role === 'admin') {
+      res.status(403).send({
+        message: 'Forbidden! You cannot change a user with such a role',
+      });
+      return;
+    }
+
+    next();
+  });
+};
+
 const verifySignUp = {
   checkDuplicateEmail,
   checkAddingAdmin,
+  checkChangingAdmin,
 };
 
 module.exports = verifySignUp;
