@@ -48,49 +48,53 @@ const parseRecordsList = (recordsList) => {
 exports.getRecordsWeekStats = (req, res) => {
   RecordModel.find({
     date: getDateFilterValue(7),
-  }).exec((err, recordsList) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+  })
+    .sort({ date: 'asc' })
+    .exec((err, recordsList) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
 
-    if (!recordsList.length) {
+      if (!recordsList.length) {
+        res.status(200).send({
+          message: 'No data',
+          data: [],
+        });
+        return;
+      }
+
       res.status(200).send({
-        message: 'No data',
-        data: [],
+        message: 'Success',
+        data: parseRecordsList(recordsList),
       });
-      return;
-    }
-
-    res.status(200).send({
-      message: 'Success',
-      data: parseRecordsList(recordsList),
     });
-  });
 };
 
 exports.getRecordsMonthStats = (req, res) => {
   const dayOnMonth = moment().daysInMonth();
 
   RecordModel.find({
-    date: getDateFilterValue(dayOnMonth),
-  }).exec((err, recordsList) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+    date: getDateFilterValue(dayOnMonth + 90), // TODO Remove!!!!
+  })
+    .sort({ date: 'asc' })
+    .exec((err, recordsList) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
 
-    if (!recordsList.length) {
+      if (!recordsList.length) {
+        res.status(200).send({
+          message: 'No data',
+          data: [],
+        });
+        return;
+      }
+
       res.status(200).send({
-        message: 'No data',
-        data: [],
+        message: 'Success',
+        data: parseRecordsList(recordsList),
       });
-      return;
-    }
-
-    res.status(200).send({
-      message: 'Success',
-      data: parseRecordsList(recordsList),
     });
-  });
 };
