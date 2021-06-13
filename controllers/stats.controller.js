@@ -75,7 +75,7 @@ exports.getRecordsMonthStats = (req, res) => {
   const dayOnMonth = moment().daysInMonth();
 
   RecordModel.find({
-    date: getDateFilterValue(dayOnMonth + 90), // TODO Remove!!!!
+    date: getDateFilterValue(dayOnMonth),
   })
     .sort({ date: 'asc' })
     .exec((err, recordsList) => {
